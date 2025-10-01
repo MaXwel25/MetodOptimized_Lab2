@@ -8,16 +8,22 @@ using namespace std;
 
 int main() {
     setlocale(LC_ALL, "ru");
-    float min_gr = -3.0, max_gr = 7.0;
+    float min_gr, max_gr;
     double a, b, c;
 
+    // ввод условия
     cout << "Введите коэффициент a: ";
     cin >> a;
     cout << "Введите коэффициент b: ";
     cin >> b;
     cout << "Введите коэффициент c: ";
     cin >> c;
-    cout << "Выберите метод для которого нужно производить вычисления: " << endl;
+    cout << endl << "Введите нижнюю границу: ";
+    cin >> min_gr;
+    cout << "Введите верхнюю границу: ";
+    cin >> max_gr;
+
+    cout << endl << "Выберите метод для которого нужно производить вычисления: " << endl;
     cout << "Метод Дихотомии - 1 " << endl;
     cout << "Метод золотого сечения - 2 " << endl;
     cout << "Метод Фибоначи - 3 " << endl;

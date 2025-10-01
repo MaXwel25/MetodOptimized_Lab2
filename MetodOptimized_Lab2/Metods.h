@@ -8,17 +8,18 @@ long double function_main(double a, double b, double c, double x) {
     return a * x * x + b * x + c;
 }
 
+void dichotomy_method(double a, double b, double c, double min_gr, double max_gr, long double epsilon = 0.2) {
+    cout << endl <<"Метод Дихотомии" << endl;
 
-void dichotomy_method(double a, double b, double c, double min_gr, double max_gr, long double epsilon = 0.5) {
-    cout << "    Метод Дихотомии" << endl;
-
-    long double delta = epsilon / 10.0; // малый параметр
-    int it = 0;
-    int function_calls = 0;
-
+    // объявляем границы здесь, чтобы не вызывать их каждый раз как параметр функции
     double left = min_gr;
     double right = max_gr;
 
+    long double delta = epsilon / (right - left); // малый параметр
+    int it = 0; // количество итераций
+    //int function_calls = 0; // если нужно подсчитать сложность алгоритма
+
+    cout << "Длина текущего отрезка: "<<(right - left)<<endl;
     cout << "Начальный отрезок: [" << left << ", " << right << "]" << endl;
     cout << "Точность: " << epsilon << endl;
     cout << "Дельта: " << delta << endl;
@@ -28,36 +29,38 @@ void dichotomy_method(double a, double b, double c, double min_gr, double max_gr
     while ((right - left) > epsilon) {
         it++;
 
-        // Вычисляем две симметричные точки
-        double x1 = (left + right - delta) / 2.0;
-        double x2 = (left + right + delta) / 2.0;
+        // вычисляем две симметричные точки
+        long double y0 = (left + right - delta) / 2.0;
+        long double z0 = (left + right + delta) / 2.0;
 
-        // Вычисляем значения функции
-        double f1 = function_main(a, b, c, x1);
-        double f2 = function_main(a, b, c, x2);
-        function_calls += 2;
+        // вычисляем значения функции
+        long double f1 = function_main(a, b, c, y0);
+        long double f2 = function_main(a, b, c, z0);
+        //function_calls += 2;
 
         cout << "Итерация " << it << ":" << endl;
         cout << "  Отрезок: [" << left << ", " << right << "], длина: " << (right - left) << endl;
-        cout << "  x1 = " << x1 << ", f(x1) = " << f1 << endl;
-        cout << "  x2 = " << x2 << ", f(x2) = " << f2 << endl;
+        cout << "  x1 = " << y0 << ", f(x1) = " << f1 << endl;
+        cout << "  x2 = " << z0 << ", f(x2) = " << f2 << endl;
 
-        // Сравниваем значения функции и сужаем отрезок
+        // сравниваем значения функции и сужаем отрезок
         if (f1 < f2) {
-            right = x2;
+            right = z0;
             cout << "  f(x1) < f(x2) => новый отрезок: [" << left << ", " << right << "]" << endl;
         }
         else {
-            left = x1;
+            left = y0;
             cout << "  f(x1) >= f(x2) => новый отрезок: [" << left << ", " << right << "]" << endl;
         }
+        
         cout << "--------------------------------------------------------" << endl;
     }
+    cout << "Условие выполнено: L = " << (right - left) << " < e = " << epsilon;
 }
 
 
 void golden_section_method(double a, double b, double c, double min_gr, double max_gr, double epsilon = 0.2) {
-    cout << "\n=== МЕТОД ЗОЛОТОГО СЕЧЕНИЯ ===" << endl;
+    cout << "     Метод золотого сечения" << endl;
 
     const long double phi = (sqrt(5.0) - 1.0) / 2.0; // ≈ 0.618
     int iterations = 0;
