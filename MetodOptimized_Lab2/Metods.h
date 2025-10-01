@@ -8,7 +8,7 @@ long double function_main(double a, double b, double c, double x) {
     return a * x * x + b * x + c;
 }
 
-void dichotomy_method(double a, double b, double c, double min_gr, double max_gr, long double epsilon = 0.2) {
+void dichotomy_method(double a, double b, double c, double min_gr, double max_gr, long double epsilon) {
     cout << endl <<"Метод Дихотомии" << endl;
 
     // объявляем границы здесь, чтобы не вызывать их каждый раз как параметр функции
@@ -17,9 +17,8 @@ void dichotomy_method(double a, double b, double c, double min_gr, double max_gr
 
     long double delta = epsilon / (right - left); // малый параметр
     int it = 0; // количество итераций
-    //int function_calls = 0; // если нужно подсчитать сложность алгоритма
+    int count = 0; // если нужно подсчитать сложность алгоритма
 
-    cout << "Длина текущего отрезка: "<<(right - left)<<endl;
     cout << "Начальный отрезок: [" << left << ", " << right << "]" << endl;
     cout << "Точность: " << epsilon << endl;
     cout << "Дельта: " << delta << endl;
@@ -36,36 +35,45 @@ void dichotomy_method(double a, double b, double c, double min_gr, double max_gr
         // вычисляем значения функции
         long double f1 = function_main(a, b, c, y0);
         long double f2 = function_main(a, b, c, z0);
-        //function_calls += 2;
+        count += 2;
 
         cout << "Итерация " << it << ":" << endl;
         cout << "  Отрезок: [" << left << ", " << right << "], длина: " << (right - left) << endl;
-        cout << "  x1 = " << y0 << ", f(x1) = " << f1 << endl;
-        cout << "  x2 = " << z0 << ", f(x2) = " << f2 << endl;
+        cout << "  y = " << y0 << ", f(y) = " << f1 << endl;
+        cout << "  z = " << z0 << ", f(z) = " << f2 << endl;
 
         // сравниваем значения функции и сужаем отрезок
         if (f1 < f2) {
             right = z0;
-            cout << "  f(x1) < f(x2) => новый отрезок: [" << left << ", " << right << "]" << endl;
+            cout << "  f(y) < f(z) => новый отрезок: [" << left << ", " << right << "]" << endl;
         }
         else {
             left = y0;
-            cout << "  f(x1) >= f(x2) => новый отрезок: [" << left << ", " << right << "]" << endl;
+            cout << "  f(y) >= f(z) => новый отрезок: [" << left << ", " << right << "]" << endl;
         }
         
         cout << "--------------------------------------------------------" << endl;
     }
-    cout << "Условие выполнено: L = " << (right - left) << " < e = " << epsilon;
+    cout << endl << "Условие выполнено: L = " << (right - left) << "  <  e = " << epsilon<<endl;
+    double x_min = (left + right) / 2.0;
+    double f_min = function_main(a, b, c, x_min);
+    count++;
+
+    cout << endl << "РЕЗУЛЬТАТЫ МЕТОДА ДИХОТОМИИ:" << endl;
+    cout << "Найденный минимум: x = " << x_min << endl;
+    cout << "Значение функции в минимуме: f(x) = " << f_min << endl;
+    cout << "Количество итераций: " << it << endl;
+    cout << "Количество вычислений функции: " << count << endl;
 }
 
 
-void golden_section_method(double a, double b, double c, double min_gr, double max_gr, double epsilon = 0.2) {
-    cout << "     Метод золотого сечения" << endl;
+void golden_section_method(double a, double b, double c, double min_gr, double max_gr, double epsilon) {
+    cout << endl << "Метод золотого сечения" << endl;
 
-    const long double phi = (sqrt(5.0) - 1.0) / 2.0; // ≈ 0.618
-    int iterations = 0;
-    int function_calls = 0;
-
+    const long double phi = (sqrt(5.0) - 1.0) / 2.0; // ~ 0.618 (золотое сечение)
+    int it = 0;
+    int count = 0;
+    cout << phi;
     double left = min_gr;
     double right = max_gr;
 
@@ -75,77 +83,64 @@ void golden_section_method(double a, double b, double c, double min_gr, double m
     cout << "--------------------------------------------------------" << endl;
 
     // Вычисляем начальные точки
-    double x1 = right - phi * (right - left);
-    double x2 = left + phi * (right - left);
+    double y0 = right - phi * (right - left);
+    double z0 = left + phi * (right - left);
 
-    double f1 = function_main(a, b, c, x1);
-    double f2 = function_main(a, b, c, x2);
-    function_calls += 2;
+    double f1 = function_main(a, b, c, y0);
+    double f2 = function_main(a, b, c, z0);
+    count += 2;
 
     cout << "Начальные точки:" << endl;
-    cout << "x1 = " << x1 << ", f(x1) = " << f1 << endl;
-    cout << "x2 = " << x2 << ", f(x2) = " << f2 << endl;
+    cout << "y = " << y0 << ", f(y) = " << f1 << endl;
+    cout << "z = " << z0 << ", f(z) = " << f2 << endl;
     cout << "--------------------------------------------------------" << endl;
 
     while ((right - left) > epsilon) {
-        iterations++;
-
-        cout << "Итерация " << iterations << ":" << endl;
+        it++;
+        cout << "Итерация " << it << ":" << endl;
         cout << "  Отрезок: [" << left << ", " << right << "], длина: " << (right - left) << endl;
-        cout << "  x1 = " << x1 << ", f(x1) = " << f1 << endl;
-        cout << "  x2 = " << x2 << ", f(x2) = " << f2 << endl;
+        cout << "  y = " << y0 << ", f(y) = " << f1 << endl;
+        cout << "  z = " << z0 << ", f(z) = " << f2 << endl;
 
         if (f1 < f2) {
-            // Минимум слева - отбрасываем правую часть
-            right = x2;
-            x2 = x1;
+            // минимум слева - отбрасываем правую часть
+            right = z0;
+            z0 = y0;
             f2 = f1;
-            x1 = right - phi * (right - left);
-            f1 = function_main(a, b, c, x1);
-            function_calls++;
-            cout << "  f(x1) < f(x2) => новый отрезок: [" << left << ", " << right << "]" << endl;
+            y0 = right - phi * (right - left);
+            f1 = function_main(a, b, c, y0);
+            count++;
+            cout << "  f(y) < f(z) => новый отрезок: [" << left << ", " << right << "]" << endl;
         }
         else {
-            // Минимум справа - отбрасываем левую часть
-            left = x1;
-            x1 = x2;
+            // минимум справа - отбрасываем левую часть
+            left = y0;
+            y0 = z0;
             f1 = f2;
-            x2 = left + phi * (right - left);
-            f2 = function_main(a, b, c, x2);
-            function_calls++;
-            cout << "  f(x1) >= f(x2) => новый отрезок: [" << left << ", " << right << "]" << endl;
+            z0 = left + phi * (right - left);
+            f2 = function_main(a, b, c, z0);
+            count++;
+            cout << "  f(y) >= f(z) => новый отрезок: [" << left << ", " << right << "]" << endl;
         }
 
-        cout << "  Новые точки: x1 = " << x1 << ", x2 = " << x2 << endl;
+        cout << "  Новые точки: y = " << y0 << ", z = " << z0 << endl;
         cout << "--------------------------------------------------------" << endl;
     }
-
+    cout <<endl<< "Условие выполнено: L = " << (right - left) << "  <  e = " << epsilon << endl;
     double x_min = (left + right) / 2.0;
     double f_min = function_main(a, b, c, x_min);
-    function_calls++;
+    count++;
 
-    cout << "РЕЗУЛЬТАТЫ МЕТОДА ЗОЛОТОГО СЕЧЕНИЯ:" << endl;
+    cout << endl << "РЕЗУЛЬТАТЫ МЕТОДА ЗОЛОТОГО СЕЧЕНИЯ:" << endl;
     cout << "Найденный минимум: x = " << x_min << endl;
     cout << "Значение функции в минимуме: f(x) = " << f_min << endl;
-    cout << "Количество итераций: " << iterations << endl;
-    cout << "Количество вычислений функции: " << function_calls << endl;
-    cout << "Длина конечного отрезка: " << (right - left) << endl;
+    cout << "Количество итераций: " << it << endl;
+    cout << "Количество вычислений функции: " << count << endl;
 
-    double exact_x_min = -b / (2.0 * a);
-    double exact_f_min = function_main(a, b, c, exact_x_min);
-
-    cout << "\nСРАВНЕНИЕ С АНАЛИТИЧЕСКИМ РЕШЕНИЕМ:" << endl;
-    cout << "Точное решение: x = " << exact_x_min << ", f(x) = " << exact_f_min << endl;
-    cout << "Погрешность по x: " << fabs(x_min - exact_x_min) << endl;
-    cout << "Погрешность по f(x): " << fabs(f_min - exact_f_min) << endl;
-
-    cout << "\nПРЕИМУЩЕСТВА МЕТОДА ЗОЛОТОГО СЕЧЕНИЯ:" << endl;
-    cout << "- Всего 1 вычисление функции на итерацию (после первой)" << endl;
-    cout << "- Коэффициент сокращения отрезка: 0.618" << endl;
-    cout << "- Оптимален для бесконечного процесса" << endl;
 }
 
 
+// вычисление чисел фибоначи
 vector<long long> generate_fibonacci_sequence(int n) {
     vector<long long> fib(n + 2);
     fib[0] = 1;
@@ -156,19 +151,19 @@ vector<long long> generate_fibonacci_sequence(int n) {
     return fib;
 }
 
-void fibonacci_method(double a, double b, double c, double min_gr, double max_gr, double epsilon = 0.2) {
-    cout << "\n=== МЕТОД ФИБОНАЧЧИ ===" << endl;
+void fibonacci_method(double a, double b, double c, double min_gr, double max_gr, double epsilon) {
+    cout << endl << "Метод Фибоначи" << endl;
 
-    int iterations = 0;
-    int function_calls = 0;
-    double left = min_gr;
-    double right = max_gr;
+    int it = 0;
+    int count = 0;
+    long double left = min_gr;
+    long double right = max_gr;
     double L0 = right - left;
 
     cout << "Начальный отрезок: [" << left << ", " << right << "], длина: " << L0 << endl;
     cout << "Точность: " << epsilon << endl;
 
-    // Определяем необходимое число итераций
+    // определяем необходимое число итераций
     int n = 1;
     while (generate_fibonacci_sequence(n)[n] < (L0 / epsilon)) {
         n++;
@@ -182,103 +177,89 @@ void fibonacci_method(double a, double b, double c, double min_gr, double max_gr
     cout << "--------------------------------------------------------" << endl;
 
     // Начальные точки
-    double x1 = left + (double)fib[n - 2] / fib[n] * (right - left);
-    double x2 = left + (double)fib[n - 1] / fib[n] * (right - left);
+    long double y = left + (double)fib[n - 2] / fib[n] * (right - left);
+    long double z = left + (double)fib[n - 1] / fib[n] * (right - left);
 
-    double f1 = function_main(a, b, c, x1);
-    double f2 = function_main(a, b, c, x2);
-    function_calls += 2;
+    long double f1 = function_main(a, b, c, y);
+    long double f2 = function_main(a, b, c, z);
+    count += 2;
 
     cout << "Начальные точки:" << endl;
-    cout << "x1 = " << x1 << ", f(x1) = " << f1 << " (F[" << n - 2 << "]/F[" << n << "] = "
+    cout << "y = " << y << ", f(y) = " << f1 << " (F[" << n - 2 << "]/F[" << n << "] = "
         << (double)fib[n - 2] / fib[n] << ")" << endl;
-    cout << "x2 = " << x2 << ", f(x2) = " << f2 << " (F[" << n - 1 << "]/F[" << n << "] = "
+    cout << "z = " << z << ", f(z) = " << f2 << " (F[" << n - 1 << "]/F[" << n << "] = "
         << (double)fib[n - 1] / fib[n] << ")" << endl;
     cout << "--------------------------------------------------------" << endl;
 
     // Основной цикл
     for (int k = 1; k <= n - 2; k++) {
-        iterations++;
+        it++;
 
-        cout << "Итерация " << iterations << " (k = " << k << "):" << endl;
+        cout << "Итерация " << it << " (k = " << k << "):" << endl;
         cout << "  Отрезок: [" << left << ", " << right << "], длина: " << (right - left) << endl;
-        cout << "  x1 = " << x1 << ", f(x1) = " << f1 << endl;
-        cout << "  x2 = " << x2 << ", f(x2) = " << f2 << endl;
+        cout << "  y = " << y << ", f(y) = " << f1 << endl;
+        cout << "  z = " << z << ", f(z) = " << f2 << endl;
         cout << "  Коэффициенты: F[" << n - k - 1 << "]/F[" << n - k + 1 << "] = "
             << (double)fib[n - k - 1] / fib[n - k + 1] << ", F[" << n - k << "]/F[" << n - k + 1 << "] = "
             << (double)fib[n - k] / fib[n - k + 1] << endl;
 
         if (f1 < f2) {
             // Минимум слева
-            right = x2;
-            x2 = x1;
+            right = z;
+            z = y;
             f2 = f1;
-            x1 = left + (double)fib[n - k - 2] / fib[n - k] * (right - left);
-            f1 = function_main(a, b, c, x1);
-            function_calls++;
-            cout << "  f(x1) < f(x2) => новый отрезок: [" << left << ", " << right << "]" << endl;
+            y = left + (double)fib[n - k - 2] / fib[n - k] * (right - left);
+            f1 = function_main(a, b, c, y);
+            count++;
+            cout << "  f(y) < f(z) => новый отрезок: [" << left << ", " << right << "]" << endl;
         }
         else {
             // Минимум справа
-            left = x1;
-            x1 = x2;
+            left = y;
+            y = z;
             f1 = f2;
-            x2 = left + (double)fib[n - k - 1] / fib[n - k] * (right - left);
-            f2 = function_main(a, b, c, x2);
-            function_calls++;
-            cout << "  f(x1) >= f(x2) => новый отрезок: [" << left << ", " << right << "]" << endl;
+            z = left + (double)fib[n - k - 1] / fib[n - k] * (right - left);
+            f2 = function_main(a, b, c, z);
+            count++;
+            cout << "  f(y) >= f(z) => новый отрезок: [" << left << ", " << right << "]" << endl;
         }
 
-        cout << "  Новые точки: x1 = " << x1 << ", x2 = " << x2 << endl;
+        cout << "  Новые точки: y = " << y << ", z = " << z << endl;
         cout << "--------------------------------------------------------" << endl;
     }
 
     // Финальная итерация (k = n-1)
-    iterations++;
-    cout << "Финальная итерация " << iterations << " (k = " << n - 1 << "):" << endl;
+    it++;
+    cout << "Финальная итерация " << it << " (k = " << n - 1 << "):" << endl;
 
     // На последней итерации добавляем δ для различения точек
     double delta = epsilon / 10.0;
-    x2 = x1 + delta;
-    f2 = function_main(a, b, c, x2);
-    function_calls++;
+    z = y + delta;
+    f2 = function_main(a, b, c, z);
+    count++;
 
-    cout << "  x1 = " << x1 << ", f(x1) = " << f1 << endl;
-    cout << "  x2 = " << x2 << ", f(x2) = " << f2 << endl;
+    cout << "  y = " << y << ", f(y) = " << f1 << endl;
+    cout << "  z = " << z << ", f(z) = " << f2 << endl;
 
     if (f1 < f2) {
-        right = x2;
-        cout << "  f(x1) < f(x2) => финальный отрезок: [" << left << ", " << right << "]" << endl;
+        right = z;
+        cout << "  f(y) < f(z) => финальный отрезок: [" << left << ", " << right << "]" << endl;
     }
     else {
-        left = x1;
-        cout << "  f(x1) >= f(x2) => финальный отрезок: [" << left << ", " << right << "]" << endl;
+        left = y;
+        cout << "  f(y) >= f(z) => финальный отрезок: [" << left << ", " << right << "]" << endl;
     }
 
     double x_min = (left + right) / 2.0;
     double f_min = function_main(a, b, c, x_min);
-    function_calls++;
+    count++;
 
     cout << "--------------------------------------------------------" << endl;
-    cout << "РЕЗУЛЬТАТЫ МЕТОДА ФИБОНАЧЧИ:" << endl;
+    cout << endl << "РЕЗУЛЬТАТЫ МЕТОДА ФИБОНАЧЧИ:" << endl;
     cout << "Найденный минимум: x = " << x_min << endl;
     cout << "Значение функции в минимуме: f(x) = " << f_min << endl;
-    cout << "Количество итераций: " << iterations << endl;
-    cout << "Количество вычислений функции: " << function_calls << endl;
+    cout << "Количество итераций: " << it << endl;
+    cout << "Количество вычислений функции: " << count << endl;
     cout << "Длина конечного отрезка: " << (right - left) << endl;
-    cout << "Коэффициент сокращения: " << (right - left) / L0 << endl;
 
-    double exact_x_min = -b / (2.0 * a);
-    double exact_f_min = function_main(a, b, c, exact_x_min);
-
-    cout << "\nСРАВНЕНИЕ С АНАЛИТИЧЕСКИМ РЕШЕНИЕМ:" << endl;
-    cout << "Точное решение: x = " << exact_x_min << ", f(x) = " << exact_f_min << endl;
-    cout << "Погрешность по x: " << fabs(x_min - exact_x_min) << endl;
-    cout << "Погрешность по f(x): " << fabs(f_min - exact_f_min) << endl;
-
-    cout << "\nОСОБЕННОСТИ МЕТОДА ФИБОНАЧЧИ:" << endl;
-    cout << "- Оптимален для заданного числа итераций" << endl;
-    cout << "- Максимальное сокращение отрезка неопределенности" << endl;
-    cout << "- Требует предварительного определения числа итераций" << endl;
-    cout << "- Коэффициенты меняются на каждой итерации" << endl;
 }

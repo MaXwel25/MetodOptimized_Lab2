@@ -9,7 +9,7 @@ using namespace std;
 int main() {
     setlocale(LC_ALL, "ru");
     float min_gr, max_gr;
-    double a, b, c;
+    double a, b, c, e;
 
     // ввод условия
     cout << "Введите коэффициент a: ";
@@ -22,7 +22,8 @@ int main() {
     cin >> min_gr;
     cout << "Введите верхнюю границу: ";
     cin >> max_gr;
-
+    cout << endl << "Введите точность: ";
+    cin >> e;
     cout << endl << "Выберите метод для которого нужно производить вычисления: " << endl;
     cout << "Метод Дихотомии - 1 " << endl;
     cout << "Метод золотого сечения - 2 " << endl;
@@ -30,11 +31,11 @@ int main() {
     cout << "Введите цифру: ";
     int n;  cin >> n;
     if (n == 1)
-        dichotomy_method(a, b, c, min_gr, max_gr);
+        dichotomy_method(a, b, c, min_gr, max_gr, e);
     else if (n == 2)
-        golden_section_method(a, b, c, min_gr, max_gr);
+        golden_section_method(a, b, c, min_gr, max_gr, e);
     else if (n == 3)
-        fibonacci_method(a, b, c, min_gr, max_gr);
+        fibonacci_method(a, b, c, min_gr, max_gr, e);
     else
     {
         cout << "Некорректный запрос";
